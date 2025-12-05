@@ -3,6 +3,8 @@ const state = {
 	data: null,
 	wordAnswer: '',
 	placeAnswer: '',
+	minDay: null,
+	maxDay: null,
 	letters: [],
 	slotToTileId: new Map(), // slotId -> tileId
 	tileToSlotId: new Map(), // tileId -> slotId
@@ -14,8 +16,8 @@ const state = {
 const els = {
 	dateLabel: document.getElementById('dateLabel'),
 	dayNumber: document.getElementById('dayNumber'),
-	dayOverride: document.getElementById('dayOverride'),
-	goToDayBtn: document.getElementById('goToDayBtn'),
+	snow: document.getElementById('snow'),
+	riddleSection: document.getElementById('riddleSection'),
 	riddleWordText: document.getElementById('riddleWordText'),
 	answerSlots: document.getElementById('answerSlots'),
 	letterBank: document.getElementById('letterBank'),
@@ -29,6 +31,8 @@ const els = {
 	checkPlaceBtn: document.getElementById('checkPlaceBtn'),
 	resetPlaceBtn: document.getElementById('resetPlaceBtn'),
 	placeFeedback: document.getElementById('placeFeedback'),
+	messageSection: document.getElementById('messageSection'),
+	messageText: document.getElementById('messageText'),
 };
 
 function getTodayDayOfAdvent() {
@@ -36,8 +40,21 @@ function getTodayDayOfAdvent() {
 	const isDecember = now.getMonth() === 11; // 0-indexed
 	if (!isDecember) return null;
 	const d = now.getDate();
-	if (d < 1 || d > 24) return null;
+	const min = state.minDay ?? 1;
+	const max = state.maxDay ?? 31;
+	if (d < min || d > max) return null;
 	return d;
+}
+
+function getSeasonPhase() {
+	const now = new Date();
+	if (now.getMonth() !== 11) return 'before';
+	const d = now.getDate();
+	const min = state.minDay ?? 1;
+	const max = state.maxDay ?? 31;
+	if (d < min) return 'before';
+	if (d > max) return 'after';
+	return 'during';
 }
 
 function getUrlOverride() {
@@ -45,7 +62,9 @@ function getUrlOverride() {
 	const dayStr = params.get('day');
 	if (!dayStr) return null;
 	const n = parseInt(dayStr, 10);
-	return Number.isFinite(n) && n >= 1 && n <= 24 ? n : null;
+	const min = state.minDay ?? 1;
+	const max = state.maxDay ?? 31;
+	return Number.isFinite(n) && n >= min && n <= max ? n : null;
 }
 
 async function loadData() {
@@ -56,7 +75,7 @@ async function loadData() {
 	} catch (e) {
 		// Fallback for local file:// testing or if JSON missing
 		return {
-			"1": {
+			"8": {
 				"indovinelloParola": "Sono piccolo e tondo, mi vedi sullo schermo. Se premi play ti porto lontano. Chi sono?",
 				"rispostaParola": "DVD",
 				"indovinelloLuogo": "Dove riposano le storie prima di essere viste? È lì che il dono ti aspetta.",
@@ -73,7 +92,36 @@ function formatDateLabel(d) {
 function setHeaderDay(day) {
 	els.dayNumber.textContent = String(day);
 	els.dateLabel.textContent = formatDateLabel(new Date());
-	els.dayOverride.value = String(day);
+}
+
+function showMessage(text) {
+	if (els.messageSection) {
+		els.messageText.textContent = text;
+		els.messageSection.classList.remove('hidden');
+	}
+	if (els.riddleSection) els.riddleSection.classList.add('hidden');
+	els.secondRiddleSection.classList.add('hidden');
+	els.dayNumber.textContent = '—';
+	// cleanup URL day param if present (avoid confusion)
+	const params = new URLSearchParams(location.search);
+	if (params.has('day')) {
+		params.delete('day');
+		history.replaceState(null, '', `${location.pathname}${params.toString() ? '?' + params.toString() : ''}`);
+	}
+}
+
+function computeAdventBoundsFromData() {
+	const keys = Object.keys(state.data ?? {})
+		.map(k => parseInt(k, 10))
+		.filter(n => Number.isFinite(n) && n >= 1 && n <= 31)
+		.sort((a, b) => a - b);
+	if (keys.length === 0) {
+		state.minDay = null;
+		state.maxDay = null;
+		return;
+	}
+	state.minDay = keys[0];
+	state.maxDay = keys[keys.length - 1];
 }
 
 function shuffle(array) {
@@ -300,6 +348,11 @@ function checkPlace() {
 }
 
 function hydrateDay(day) {
+	// ensure message section hidden when showing a day
+	if (els.messageSection) els.messageSection.classList.add('hidden');
+	// ensure riddle section visible
+	if (els.riddleSection) els.riddleSection.classList.remove('hidden');
+
 	const record = state.data?.[String(day)];
 	if (!record) {
 		els.riddleWordText.textContent = 'Nessun indovinello disponibile per questo giorno.';
@@ -338,10 +391,6 @@ function goToDay(day) {
 }
 
 function wireEvents() {
-	els.goToDayBtn.addEventListener('click', () => {
-		const n = parseInt(els.dayOverride.value, 10);
-		if (Number.isFinite(n) && n >= 1 && n <= 24) goToDay(n);
-	});
 	els.checkAnswerBtn.addEventListener('click', () => {
 		if (checkFirstRiddle()) revealSecondRiddle();
 	});
@@ -353,12 +402,62 @@ function wireEvents() {
 async function init() {
 	wireEvents();
 	state.data = await loadData();
-	const override = getUrlOverride();
-	const today = getTodayDayOfAdvent();
-	const initial = override ?? today ?? 1;
-	goToDay(initial);
+	computeAdventBoundsFromData();
+	// No configured days
+	if (state.minDay == null || state.maxDay == null) {
+		showMessage('Calendario non configurato. Aggiungi giorni in data/advent.json.');
+		createSnowflakes(120);
+		return;
+	}
+	const phase = getSeasonPhase();
+	if (phase !== 'during') {
+		if (phase === 'before') {
+			showMessage(`Ci vediamo dal ${state.minDay} dicembre! 🎄`);
+		} else {
+			showMessage(`Il calendario si è concluso (fino al ${state.maxDay} dicembre). Buone Feste! ✨`);
+		}
+	} else {
+		// Allow override ONLY during 8–25
+		const override = getUrlOverride();
+		const today = getTodayDayOfAdvent();
+		const initial = override ?? today ?? state.minDay;
+		goToDay(initial);
+	}
+	createSnowflakes(120);
 }
 
 init();
+
+// --- Snow generation ---
+function createSnowflakes(count = 120) {
+	if (!els.snow) return;
+	const symbols = ['❄', '❅', '❆', '✦'];
+	for (let i = 0; i < count; i++) {
+		const wrap = document.createElement('div');
+		wrap.className = 'flake-wrap';
+		const flake = document.createElement('div');
+		flake.className = 'flake';
+		flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+		// Random props
+		const left = Math.random() * 100; // vw
+		const size = 8 + Math.random() * 10; // px
+		const opacity = 0.35 + Math.random() * 0.6;
+		const fallDur = 10 + Math.random() * 12; // s
+		const delay = Math.random() * 10; // s
+		const swayDur = 4 + Math.random() * 6; // s
+		const swayDelay = Math.random() * 6; // s
+		// Apply
+		flake.style.setProperty('--left', left + 'vw');
+		flake.style.setProperty('--size', size + 'px');
+		flake.style.setProperty('--opacity', opacity.toFixed(2));
+		flake.style.setProperty('--fallDur', fallDur + 's');
+		flake.style.setProperty('--delay', delay + 's');
+		wrap.style.setProperty('--swayDur', swayDur + 's');
+		wrap.style.setProperty('--swayDelay', swayDelay + 's');
+		wrap.style.left = left + 'vw';
+		wrap.appendChild(flake);
+		els.snow.appendChild(wrap);
+	}
+}
 
 

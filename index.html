@@ -10,22 +10,22 @@
 	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
+	<div id="snow" aria-hidden="true"></div>
 	<header class="site-header">
-		<h1>Calendario dell'Avvento</h1>
-		<p class="subtitle">Cinema & TV edition</p>
+		<h1><span class="tree-icon" aria-hidden="true">🎄</span> Calendario dell'Avvento <span class="stars" aria-hidden="true">✦ ✨ ✧</span></h1>
 	</header>
 
 	<main class="container">
+		<section id="messageSection" class="card hidden">
+			<h2>Calendario dell'Avvento</h2>
+			<p id="messageText" class="riddle-text"></p>
+		</section>
+
 		<section class="day-picker">
 			<div class="day-info">
 				<span id="dateLabel"></span>
 				<span class="sep">·</span>
-				<span>Giorno <strong id="dayNumber">—</strong> di 24</span>
-			</div>
-			<div class="override">
-				<label for="dayOverride">Vai al giorno:</label>
-				<input id="dayOverride" type="number" min="1" max="24" inputmode="numeric">
-				<button id="goToDayBtn" type="button">Vai</button>
+				<span>Giorno <strong id="dayNumber">—</strong></span>
 			</div>
 		</section>
 

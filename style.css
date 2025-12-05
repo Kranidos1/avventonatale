@@ -30,10 +30,33 @@ body {
 	font-family: Montserrat, sans-serif;
 	font-weight: 700;
 	letter-spacing: .5px;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	text-shadow: 0 2px 12px rgba(229, 9, 20, .15), 0 0 24px rgba(212, 175, 55, .12);
 }
 .subtitle {
 	color: var(--muted);
 	margin-top: 6px;
+}
+.tree-icon {
+	font-size: 1.6em;
+	filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)) drop-shadow(0 0 10px rgba(212,175,55,.25));
+	animation: treeGlow 2.2s ease-in-out infinite alternate;
+}
+.stars {
+	font-size: 0.95em;
+	color: #ffe9a8;
+	filter: drop-shadow(0 0 6px rgba(255, 233, 168, .35));
+	animation: twinkle 2.8s ease-in-out infinite;
+}
+@keyframes treeGlow {
+	from { transform: translateY(0); }
+	to { transform: translateY(-1px); }
+}
+@keyframes twinkle {
+	0%, 100% { opacity: .7; transform: rotate(0deg) scale(1); }
+	50% { opacity: 1; transform: rotate(6deg) scale(1.1); }
 }
 
 .container {
@@ -174,6 +197,41 @@ body {
 	text-align: center;
 	color: var(--muted);
 	padding: 20px 12px 40px;
+}
+
+/* Snow overlay */
+#snow {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	overflow: hidden;
+	z-index: 10;
+}
+.flake-wrap {
+	position: absolute;
+	left: 0;
+	animation: sway var(--swayDur, 6s) ease-in-out var(--swayDelay, 0s) infinite alternate;
+	will-change: transform;
+}
+.flake {
+	position: absolute;
+	top: -10px;
+	left: var(--left, 0);
+	font-size: var(--size, 10px);
+	opacity: var(--opacity, .9);
+	color: #ffffff;
+	text-shadow: 0 0 6px rgba(255,255,255,.7), 0 0 12px rgba(255,255,255,.35);
+	filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
+	animation: snowfall var(--fallDur, 12s) linear var(--delay, 0s) infinite;
+	will-change: transform, top;
+}
+@keyframes snowfall {
+	from { top: -10px; }
+	to { top: 110vh; }
+}
+@keyframes sway {
+	from { transform: translateX(-18px); }
+	to { transform: translateX(18px); }
 }
 
 .sr-only {
