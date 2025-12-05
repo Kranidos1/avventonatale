@@ -1,0 +1,20 @@
+{
+    "1": {
+        "indovinelloParola": "Cosa piace a Giovanni?",
+        "rispostaParola": "Cazzo",
+        "indovinelloLuogo": "Cosa guarda giovanni nel corridoio?",
+        "rispostaLuogo": "SAN CIRO"
+    },
+    "2": {
+        "indovinelloParola": "Non ho bocca ma parlo, ti seguo sul set e a teatro. Mi tieni in mano e do voce agli eroi. Chi sono?",
+        "rispostaParola": "MICROFONO",
+        "indovinelloLuogo": "Dove si siede il pubblico di casa per le maratone di serie?",
+        "rispostaLuogo": "DIVANO"
+    },
+    "3": {
+        "indovinelloParola": "Batto e inizia la magia, segno le scene e tengo il tempo. Chi sono?",
+        "rispostaParola": "CIAK",
+        "indovinelloLuogo": "Dove si appendono i costumi tra una scena e l’altra?",
+        "rispostaLuogo": "ARMADIO"
+    }
+}
