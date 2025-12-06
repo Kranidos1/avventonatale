@@ -1,14 +1,110 @@
 {
-    "5": {
-        "indovinelloParola": "Non ho bocca ma parlo, ti seguo sul set e a teatro. Mi tieni in mano e do voce agli eroi. Chi sono?",
-        "rispostaParola": "MICROFONO",
-        "indovinelloLuogo": "Dove si siede il pubblico di casa per le maratone di serie?",
-        "rispostaLuogo": "DIVANO"
-    },
-    "10": {
-        "indovinelloParola": "Batto e inizia la magia, segno le scene e tengo il tempo. Chi sono?",
-        "rispostaParola": "CIAK",
-        "indovinelloLuogo": "Dove si appendono i costumi tra una scena e l’altra?",
-        "rispostaLuogo": "ARMADIO"
-    }
+	"8": {
+		"indovinelloParola": "Sono un ricordo congelato nel tempo, catturato con un click. Mi puoi tenere in mano o appendere al muro. Cosa sono?",
+		"rispostaParola": "FOTO",
+		"indovinelloLuogo": "Dove ti porto ogni giorno, con quattro ruote e due colori, blu scuro come il mare di notte?",
+		"rispostaLuogo": "AUTO"
+	},
+	"9": {
+		"indovinelloParola": "Morbide come nuvole, calde per i tuoi piedi, con due orecchie tonde che sorridono sempre. Cosa sono?",
+		"rispostaParola": "CIABATTE",
+		"indovinelloLuogo": "Dove riposano i passi di ogni giorno, prima di uscire nel mondo?",
+		"rispostaLuogo": "ARMADIO"
+	},
+	"10": {
+		"indovinelloParola": "Vestono i tuoi piedi con allegria, con orecchie tonde e sorriso Disney. Cosa sono?",
+		"rispostaParola": "CALZINI",
+		"indovinelloLuogo": "Dove sei cresciuta con amore materno?",
+		"rispostaLuogo": "NONNA LUCIA"
+	},
+	"11": {
+		"indovinelloParola": "Mi metti sul viso per coccolarti, ti rendo la pelle morbida come seta. Cosa sono?",
+		"rispostaParola": "MASCHERE",
+		"indovinelloLuogo": "Dove sei cresciuta con amore paterno?",
+		"rispostaLuogo": "NONNA CARMELA"
+	},
+	"12": {
+		"indovinelloParola": "Passo tra i tuoi capelli rossi come fuoco, ti rendo bella ogni mattina. Cosa sono?",
+		"rispostaParola": "SPAZZOLA",
+		"indovinelloLuogo": "Chi ti ama incondizionatamente ancor prima di nascere?",
+		"rispostaLuogo": "MAMMA"
+	},
+	"13": {
+		"indovinelloParola": "Ti rilasso e ti coccolo, le mie mani ti fanno sognare. Cosa sono?",
+		"rispostaParola": "MASSAGGIO",
+		"indovinelloLuogo": "Destinazione di avventure, città del flamenco e delle tapas, dove andremo insieme?",
+		"rispostaLuogo": "MADRID"
+	},
+	"14": {
+		"indovinelloParola": "Dolci bastoncini fritti e croccanti, spolverati di zucchero e cannella. Cosa sono?",
+		"rispostaParola": "CHURROS",
+		"indovinelloLuogo": "Città spagnola dove li mangeremo insieme, tra musei e strade piene di vita?",
+		"rispostaLuogo": "MADRID"
+	},
+	"15": {
+		"indovinelloParola": "Tavola imbandita, candele accese, un momento speciale solo per noi due. Cos'è?",
+		"rispostaParola": "CENA",
+		"indovinelloLuogo": "Nella capitale spagnola, dove cammineremo mano nella mano?",
+		"rispostaLuogo": "MADRID"
+	},
+	"16": {
+		"indovinelloParola": "A mezzogiorno ci fermiamo, un pasto veloce prima di volare via. Cos'è?",
+		"rispostaParola": "PRANZO",
+		"indovinelloLuogo": "Da dove torneremo, città di Goya e Velázquez?",
+		"rispostaLuogo": "MADRID"
+	},
+	"17": {
+		"indovinelloParola": "Danzo con la mia fiamma, profumo l'aria, creo atmosfera magica. Cosa sono?",
+		"rispostaParola": "CANDELA",
+		"indovinelloLuogo": "Chi ti terrebbe con se tutta la vita e ti ama più di se stesso?",
+		"rispostaLuogo": "PAPA"
+	},
+	"18": {
+		"indovinelloParola": "Schermo grande, popcorn e emozioni, dove le storie che studi prendono vita. Cos'è?",
+		"rispostaParola": "CINEMA",
+		"indovinelloLuogo": "Chi ti ama da otto anni e vuole portarti a sognare?",
+		"rispostaLuogo": "MATTIA"
+	},
+	"19": {
+		"indovinelloParola": "Mi stendi sul viso, mi lasci agire, ti dono bellezza e freschezza. Cosa sono?",
+		"rispostaParola": "MASCHERE",
+		"indovinelloLuogo": "Chi con amore e dolcezza ti pensa sempre, e cucina per un esercito?",
+		"rispostaLuogo": "NONNA LUCIA"
+	},
+	"20": {
+		"indovinelloParola": "Ancora orecchie tonde per i tuoi piedi, perché non se ne hanno mai abbastanza! Cosa sono?",
+		"rispostaParola": "CALZINI",
+		"indovinelloLuogo": "Condivide il tuo nome e il tuo carattere",
+		"rispostaLuogo": "NONNA CARMELA"
+	},
+	"21": {
+		"indovinelloParola": "Piccoli, saporiti, firmati Beretta, perfetti per uno spuntino. Cosa sono?",
+		"rispostaParola": "SALAMINI",
+		"indovinelloLuogo": "Dove tengo le cose fresche, tra verdure e bevande?",
+		"rispostaLuogo": "FRIGO"
+	},
+	"22": {
+		"indovinelloParola": "Scoppiano nella pentola, perfetti per una maratona di film, dolci o salati come li preferisci. Cosa sono?",
+		"rispostaParola": "POPCORN",
+		"indovinelloLuogo": "Goditeli vicino al camino!",
+		"rispostaLuogo": "NONNA LUCIA"
+	},
+	"23": {
+		"indovinelloParola": "Sono un albero speciale che non perde foglie, ti scalderò le mani con cioccolata o tè. Cosa sono?",
+		"rispostaParola": "TAZZA",
+		"indovinelloLuogo": "Saprebbe fare anche questa",
+		"rispostaLuogo": "NONNA CARMELA"
+	},
+	"24": {
+		"indovinelloParola": "Oggi non c'è indovinello! Vai da nonna Lucia, lei ti dirà cosa cercare.",
+		"rispostaParola": "NONNA CARMELA",
+		"indovinelloLuogo": "Un brindisi allegro, stuzzichini e risate, un momento speciale prima della grande festa. Cos'è?",
+		"rispostaLuogo": "APERITIVO"
+	},
+	"25": {
+		"indovinelloParola": "Oggi non c'è indovinello! Vai da nonna Lucia, lei ti dirà cosa cercare.",
+		"rispostaParola": "APAPULEJA",
+		"indovinelloLuogo": "Oggi non c'è indovinello! Vai da nonno Ciro, lui ti dirà dove cercare.",
+		"rispostaLuogo": "ASCELLA"
+	}
 }
