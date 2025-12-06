@@ -400,6 +400,23 @@ function wireEvents() {
 }
 
 async function init() {
+	// Check for debug parameter to bypass date check
+	const params = new URLSearchParams(location.search);
+	const isDebug = params.has('debug');
+	
+	// Check if before December 8th - redirect to video (unless debug mode)
+	if (!isDebug) {
+		const now = new Date();
+		const isDecember = now.getMonth() === 11; // 0-indexed
+		const dayOfMonth = now.getDate();
+		
+		if (!isDecember || dayOfMonth < 8) {
+			// Redirect to YouTube video
+			window.location.href = 'https://www.youtube.com/watch?v=QJ5DOWPGxwg';
+			return;
+		}
+	}
+
 	wireEvents();
 	state.data = await loadData();
 	computeAdventBoundsFromData();
