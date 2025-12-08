@@ -277,55 +277,6 @@ body {
   padding: 20px 12px 40px;
 }
 
-/* Snow overlay */
-#snow {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 10;
-}
-
-.flake-wrap {
-  position: absolute;
-  left: 0;
-  animation: sway var(--swayDur, 6s) ease-in-out var(--swayDelay, 0s) infinite alternate;
-  will-change: transform;
-}
-
-.flake {
-  position: absolute;
-  top: -10px;
-  left: var(--left, 0);
-  font-size: var(--size, 10px);
-  opacity: var(--opacity, .9);
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(255, 255, 255, .7), 0 0 12px rgba(255, 255, 255, .35);
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .25));
-  animation: snowfall var(--fallDur, 12s) linear var(--delay, 0s) infinite;
-  will-change: transform, top;
-}
-
-@keyframes snowfall {
-  from {
-    top: -10px;
-  }
-
-  to {
-    top: 110vh;
-  }
-}
-
-@keyframes sway {
-  from {
-    transform: translateX(-18px);
-  }
-
-  to {
-    transform: translateX(18px);
-  }
-}
-
 .sr-only {
   position: absolute !important;
   clip: rect(1px, 1px, 1px, 1px);
@@ -389,40 +340,6 @@ body {
   overflow-x: hidden;
   padding-left: env(safe-area-inset-left, 0);
   padding-right: env(safe-area-inset-right, 0);
-}
-
-/* Snow overlay (lightweight) */
-.snow {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.9) 50%, transparent 51%),
-    radial-gradient(2px 2px at 100px 80px, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
-    radial-gradient(3px 3px at 200px 150px, rgba(255, 255, 255, 0.9) 50%, transparent 51%),
-    radial-gradient(2px 2px at 250px 10px, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
-    radial-gradient(2px 2px at 300px 120px, rgba(255, 255, 255, 0.9) 50%, transparent 51%),
-    radial-gradient(3px 3px at 400px 100px, rgba(255, 255, 255, 0.9) 50%, transparent 51%);
-  background-size: 400px 200px, 600px 300px, 500px 250px, 450px 225px, 550px 275px, 650px 325px;
-  animation: snowFall 18s linear infinite;
-  opacity: 0.6;
-}
-
-@keyframes snowFall {
-  0% {
-    transform: translateY(-10px);
-  }
-
-  100% {
-    transform: translateY(15px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .snow {
-    animation: none;
-    opacity: 0.35;
-  }
 }
 
 /* Layout */

@@ -16,7 +16,6 @@ const state = {
 const els = {
 	dateLabel: document.getElementById('dateLabel'),
 	dayNumber: document.getElementById('dayNumber'),
-	snow: document.getElementById('snow'),
 	riddleSection: document.getElementById('riddleSection'),
 	riddleWordText: document.getElementById('riddleWordText'),
 	answerSlots: document.getElementById('answerSlots'),
@@ -400,30 +399,12 @@ function wireEvents() {
 }
 
 async function init() {
-	// Check for debug parameter to bypass date check
-	const params = new URLSearchParams(location.search);
-	const isDebug = params.has('debug');
-	
-	// Check if before December 8th - redirect to video (unless debug mode)
-	if (!isDebug) {
-		const now = new Date();
-		const isDecember = now.getMonth() === 11; // 0-indexed
-		const dayOfMonth = now.getDate();
-		
-		if (!isDecember || dayOfMonth < 8) {
-			// Redirect to YouTube video
-			window.location.href = 'https://www.youtube.com/watch?v=QJ5DOWPGxwg';
-			return;
-		}
-	}
-
 	wireEvents();
 	state.data = await loadData();
 	computeAdventBoundsFromData();
 	// No configured days
 	if (state.minDay == null || state.maxDay == null) {
 		showMessage('Calendario non configurato. Aggiungi giorni in data/advent.json.');
-		createSnowflakes(120);
 		return;
 	}
 	const phase = getSeasonPhase();
@@ -440,41 +421,7 @@ async function init() {
 		const initial = override ?? today ?? state.minDay;
 		goToDay(initial);
 	}
-	createSnowflakes(120);
 }
 
 init();
-
-// --- Snow generation ---
-function createSnowflakes(count = 120) {
-	if (!els.snow) return;
-	const symbols = ['❄', '❅', '❆', '✦'];
-	for (let i = 0; i < count; i++) {
-		const wrap = document.createElement('div');
-		wrap.className = 'flake-wrap';
-		const flake = document.createElement('div');
-		flake.className = 'flake';
-		flake.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-		// Random props
-		const left = Math.random() * 100; // vw
-		const size = 8 + Math.random() * 10; // px
-		const opacity = 0.35 + Math.random() * 0.6;
-		const fallDur = 10 + Math.random() * 12; // s
-		const delay = Math.random() * 10; // s
-		const swayDur = 4 + Math.random() * 6; // s
-		const swayDelay = Math.random() * 6; // s
-		// Apply
-		flake.style.setProperty('--left', left + 'vw');
-		flake.style.setProperty('--size', size + 'px');
-		flake.style.setProperty('--opacity', opacity.toFixed(2));
-		flake.style.setProperty('--fallDur', fallDur + 's');
-		flake.style.setProperty('--delay', delay + 's');
-		wrap.style.setProperty('--swayDur', swayDur + 's');
-		wrap.style.setProperty('--swayDelay', swayDelay + 's');
-		wrap.style.left = left + 'vw';
-		wrap.appendChild(flake);
-		els.snow.appendChild(wrap);
-	}
-}
-
 
