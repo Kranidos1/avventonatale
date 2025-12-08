@@ -32,9 +32,9 @@
 			<h2>Indovinello 1 — Oggetto del giorno</h2>
 			<p id="riddleWordText" class="riddle-text">Caricamento…</p>
 
-			<div id="dndGame" class="dnd">
-				<div id="answerSlots" class="slots" aria-label="Spazi risposta"></div>
-				<div id="letterBank" class="bank" aria-label="Lettere trascinabili"></div>
+			<div id="typingGame" class="typing-game">
+				<div id="wordDisplay" class="word-display" aria-label="Risposta"></div>
+				<input type="text" id="wordInput" class="word-input" autocomplete="off" spellcheck="false" placeholder="Digita la risposta..." aria-label="Input risposta">
 			</div>
 
 			<div class="actions">
@@ -47,9 +47,9 @@
 		<section id="secondRiddleSection" class="card hidden">
 			<h2>Indovinello 2 — Dove si trova il regalo?</h2>
 			<p id="riddlePlaceText" class="riddle-text"></p>
-			<div id="dndGame2" class="dnd">
-				<div id="answerSlots2" class="slots" aria-label="Spazi risposta luogo"></div>
-				<div id="letterBank2" class="bank" aria-label="Lettere trascinabili luogo"></div>
+			<div id="typingGame2" class="typing-game">
+				<div id="wordDisplay2" class="word-display" aria-label="Risposta luogo"></div>
+				<input type="text" id="wordInput2" class="word-input" autocomplete="off" spellcheck="false" placeholder="Digita la risposta..." aria-label="Input risposta luogo">
 			</div>
 			<div class="actions">
 				<button id="checkPlaceBtn" type="button">Controlla luogo</button>

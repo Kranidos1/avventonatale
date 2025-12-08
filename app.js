@@ -5,12 +5,8 @@ const state = {
 	placeAnswer: '',
 	minDay: null,
 	maxDay: null,
-	letters: [],
-	slotToTileId: new Map(), // slotId -> tileId
-	tileToSlotId: new Map(), // tileId -> slotId
-	// Second puzzle maps
-	slotToTileId2: new Map(),
-	tileToSlotId2: new Map(),
+	currentInput: '',
+	currentInput2: '',
 };
 
 const els = {
@@ -18,15 +14,15 @@ const els = {
 	dayNumber: document.getElementById('dayNumber'),
 	riddleSection: document.getElementById('riddleSection'),
 	riddleWordText: document.getElementById('riddleWordText'),
-	answerSlots: document.getElementById('answerSlots'),
-	letterBank: document.getElementById('letterBank'),
+	wordDisplay: document.getElementById('wordDisplay'),
+	wordInput: document.getElementById('wordInput'),
 	checkAnswerBtn: document.getElementById('checkAnswerBtn'),
 	resetBtn: document.getElementById('resetBtn'),
 	feedback: document.getElementById('feedback'),
 	secondRiddleSection: document.getElementById('secondRiddleSection'),
 	riddlePlaceText: document.getElementById('riddlePlaceText'),
-	answerSlots2: document.getElementById('answerSlots2'),
-	letterBank2: document.getElementById('letterBank2'),
+	wordDisplay2: document.getElementById('wordDisplay2'),
+	wordInput2: document.getElementById('wordInput2'),
 	checkPlaceBtn: document.getElementById('checkPlaceBtn'),
 	resetPlaceBtn: document.getElementById('resetPlaceBtn'),
 	placeFeedback: document.getElementById('placeFeedback'),
@@ -123,198 +119,48 @@ function computeAdventBoundsFromData() {
 	state.maxDay = keys[keys.length - 1];
 }
 
-function shuffle(array) {
-	for (let i = array.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[array[i], array[j]] = [array[j], array[i]];
-	}
-	return array;
-}
-
-function clearNode(node) { while (node.firstChild) node.removeChild(node.firstChild); }
-
-function buildSlots(answer) {
-	clearNode(els.answerSlots);
-	state.slotToTileId.clear();
-	state.tileToSlotId.clear();
-	const letters = answer.split('');
-	letters.forEach((_, idx) => {
-		const slot = document.createElement('div');
-		slot.className = 'slot';
-		slot.dataset.slotId = 's' + idx;
-		slot.setAttribute('aria-dropeffect', 'move');
-		slot.addEventListener('dragover', (e) => e.preventDefault());
-		slot.addEventListener('drop', onDropToSlotWord);
-		els.answerSlots.appendChild(slot);
-	});
-}
-
-function buildBank(letters) {
-	clearNode(els.letterBank);
-	letters.forEach((ch, idx) => {
-		const tile = document.createElement('div');
-		tile.className = 'tile';
-		tile.textContent = ch;
-		tile.draggable = true;
-		tile.id = 'w-' + idx; // unique prefix for word puzzle
-		tile.addEventListener('dragstart', onDragStart);
-		tile.addEventListener('dragend', onDragEnd);
-		els.letterBank.appendChild(tile);
-	});
-}
-
-function onDragStart(ev) {
-	ev.dataTransfer.setData('text/plain', ev.target.id);
-	ev.target.classList.add('dragging');
-}
-function onDragEnd(ev) {
-	ev.target.classList.remove('dragging');
-}
-
-function onDropToSlotWord(ev) {
-	ev.preventDefault();
-	const tileId = ev.dataTransfer.getData('text/plain');
-	const tile = document.getElementById(tileId);
-	if (!tile) return;
-	const slot = ev.currentTarget;
-
-	// If tile already placed somewhere, free previous slot
-	const currentSlotId = state.tileToSlotId.get(tileId);
-	if (currentSlotId) {
-		state.slotToTileId.delete(currentSlotId);
-		const oldSlot = [...els.answerSlots.children].find(el => el.dataset.slotId === currentSlotId);
-		if (oldSlot) oldSlot.classList.remove('filled');
-	}
-
-	// If slot already has tile, move it back to bank
-	const slotId = slot.dataset.slotId;
-	const occupiedTileId = state.slotToTileId.get(slotId);
-	if (occupiedTileId) {
-		const occupiedTile = document.getElementById(occupiedTileId);
-		if (occupiedTile) els.letterBank.appendChild(occupiedTile);
-		state.tileToSlotId.delete(occupiedTileId);
-	}
-
-	slot.classList.add('filled');
-	state.slotToTileId.set(slotId, tileId);
-	state.tileToSlotId.set(tileId, slotId);
-	slot.appendChild(tile);
-}
-
-function resetDnd() {
-	// Move all tiles back to bank
-	[...els.answerSlots.children].forEach(slot => {
-		slot.classList.remove('filled');
-		const tile = slot.querySelector('.tile');
-		if (tile) els.letterBank.appendChild(tile);
-	});
-	state.slotToTileId.clear();
-	state.tileToSlotId.clear();
-	els.feedback.textContent = '';
-	els.feedback.className = 'feedback';
-}
-
-function getConstructedAnswer() {
-	const slots = [...els.answerSlots.children];
-	return slots.map(slot => {
-		const tile = slot.querySelector('.tile');
-		return tile ? tile.textContent : '';
-	}).join('');
-}
-
-// --- Second puzzle (place) DnD helpers ---
-function buildSlots2(answer) {
-	clearNode(els.answerSlots2);
-	state.slotToTileId2.clear();
-	state.tileToSlotId2.clear();
-	const letters = answer.split('');
-	letters.forEach((_, idx) => {
-		const slot = document.createElement('div');
-		slot.className = 'slot';
-		slot.dataset.slotId = 'p' + idx;
-		slot.setAttribute('aria-dropeffect', 'move');
-		slot.addEventListener('dragover', (e) => e.preventDefault());
-		slot.addEventListener('drop', onDropToSlotPlace);
-		els.answerSlots2.appendChild(slot);
-	});
-}
-
-function buildBank2(letters) {
-	clearNode(els.letterBank2);
-	letters.forEach((ch, idx) => {
-		const tile = document.createElement('div');
-		tile.className = 'tile';
-		tile.textContent = ch;
-		tile.draggable = true;
-		tile.id = 'p-' + idx; // unique prefix for place puzzle
-		tile.addEventListener('dragstart', onDragStart);
-		tile.addEventListener('dragend', onDragEnd);
-		els.letterBank2.appendChild(tile);
-	});
-}
-
-function onDropToSlotPlace(ev) {
-	ev.preventDefault();
-	const tileId = ev.dataTransfer.getData('text/plain');
-	const tile = document.getElementById(tileId);
-	if (!tile) return;
-	const slot = ev.currentTarget;
-
-	// If tile already placed somewhere, free previous slot
-	const currentSlotId = state.tileToSlotId2.get(tileId);
-	if (currentSlotId) {
-		state.slotToTileId2.delete(currentSlotId);
-		const oldSlot = [...els.answerSlots2.children].find(el => el.dataset.slotId === currentSlotId);
-		if (oldSlot) oldSlot.classList.remove('filled');
-	}
-
-	// If slot already has tile, move it back to bank
-	const slotId = slot.dataset.slotId;
-	const occupiedTileId = state.slotToTileId2.get(slotId);
-	if (occupiedTileId) {
-		const occupiedTile = document.getElementById(occupiedTileId);
-		if (occupiedTile) els.letterBank2.appendChild(occupiedTile);
-		state.tileToSlotId2.delete(occupiedTileId);
-	}
-
-	slot.classList.add('filled');
-	state.slotToTileId2.set(slotId, tileId);
-	state.tileToSlotId2.set(tileId, slotId);
-	slot.appendChild(tile);
-}
-
-function resetDnd2() {
-	[...els.answerSlots2.children].forEach(slot => {
-		slot.classList.remove('filled');
-		const tile = slot.querySelector('.tile');
-		if (tile) els.letterBank2.appendChild(tile);
-	});
-	state.slotToTileId2.clear();
-	state.tileToSlotId2.clear();
-	els.placeFeedback.textContent = '';
-	els.placeFeedback.className = 'feedback';
-}
-
-function getConstructedAnswer2() {
-	const slots = [...els.answerSlots2.children];
-	return slots.map(slot => {
-		const tile = slot.querySelector('.tile');
-		return tile ? tile.textContent : '';
-	}).join('');
-}
-
 function normalize(s) {
 	return (s || '').toString().trim().toUpperCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
 }
 
+function updateWordDisplay(input, answer, displayEl) {
+	displayEl.innerHTML = '';
+	const normalizedInput = normalize(input);
+	const normalizedAnswer = normalize(answer);
+	
+	// Create boxes for each letter in the answer
+	for (let i = 0; i < normalizedAnswer.length; i++) {
+		const box = document.createElement('div');
+		box.className = 'letter-box';
+		
+		if (i < normalizedInput.length) {
+			const inputChar = normalizedInput[i];
+			const answerChar = normalizedAnswer[i];
+			box.textContent = inputChar;
+			
+			if (inputChar === answerChar) {
+				box.classList.add('correct');
+			} else {
+				box.classList.add('wrong');
+			}
+		} else {
+			box.classList.add('empty');
+		}
+		
+		displayEl.appendChild(box);
+	}
+}
+
 function checkFirstRiddle() {
-	const attempt = normalize(getConstructedAnswer());
+	const attempt = normalize(state.currentInput);
 	const correct = normalize(state.wordAnswer);
+	
 	if (attempt.length !== correct.length) {
-		els.feedback.textContent = 'Completa tutte le lettere 😊';
+		els.feedback.textContent = 'La risposta deve avere ' + correct.length + ' lettere 😊';
 		els.feedback.className = 'feedback err';
 		return false;
 	}
+	
 	const ok = attempt === correct;
 	els.feedback.textContent = ok ? 'Bravo! 🎉 Passa al secondo indovinello.' : 'Quasi… riprova!';
 	els.feedback.className = 'feedback ' + (ok ? 'ok' : 'err');
@@ -325,21 +171,22 @@ function revealSecondRiddle() {
 	els.secondRiddleSection.classList.remove('hidden');
 	els.placeFeedback.textContent = '';
 	els.placeFeedback.className = 'feedback';
-	// Build second DnD
-	buildSlots2(state.placeAnswer);
-	const letters2 = shuffle(state.placeAnswer.split(''));
-	buildBank2(letters2);
-	resetDnd2();
+	state.currentInput2 = '';
+	els.wordInput2.value = '';
+	els.wordInput2.focus();
+	updateWordDisplay('', state.placeAnswer, els.wordDisplay2);
 }
 
 function checkPlace() {
-	const attempt = normalize(getConstructedAnswer2());
+	const attempt = normalize(state.currentInput2);
 	const correct = normalize(state.placeAnswer);
+	
 	if (attempt.length !== correct.length) {
-		els.placeFeedback.textContent = 'Completa tutte le lettere 😊';
+		els.placeFeedback.textContent = 'La risposta deve avere ' + correct.length + ' lettere 😊';
 		els.placeFeedback.className = 'feedback err';
 		return false;
 	}
+	
 	const ok = attempt === correct;
 	els.placeFeedback.textContent = ok ? 'Trovato! 🗺️ Vai a cercare lì!' : 'Mmm, non credo sia quello. Riprova!';
 	els.placeFeedback.className = 'feedback ' + (ok ? 'ok' : 'err');
@@ -368,16 +215,22 @@ function hydrateDay(day) {
 	els.riddleWordText.textContent = r1;
 	els.riddlePlaceText.textContent = r2;
 
-	// Build DnD game
-	buildSlots(a1);
-	const letters = shuffle(a1.split(''));
-	state.letters = letters;
-	buildBank(letters);
-	resetDnd();
+	// Reset inputs
+	state.currentInput = '';
+	state.currentInput2 = '';
+	els.wordInput.value = '';
+	els.wordInput2.value = '';
+	els.feedback.textContent = '';
+	els.feedback.className = 'feedback';
+	els.placeFeedback.textContent = '';
+	els.placeFeedback.className = 'feedback';
+	
+	// Update displays
+	updateWordDisplay('', a1, els.wordDisplay);
+	updateWordDisplay('', a2, els.wordDisplay2);
+	
 	els.secondRiddleSection.classList.add('hidden');
-	// Clear second puzzle containers
-	clearNode(els.answerSlots2);
-	clearNode(els.letterBank2);
+	els.wordInput.focus();
 }
 
 function goToDay(day) {
@@ -393,9 +246,53 @@ function wireEvents() {
 	els.checkAnswerBtn.addEventListener('click', () => {
 		if (checkFirstRiddle()) revealSecondRiddle();
 	});
-	els.resetBtn.addEventListener('click', resetDnd);
+	
+	els.resetBtn.addEventListener('click', () => {
+		state.currentInput = '';
+		els.wordInput.value = '';
+		els.feedback.textContent = '';
+		els.feedback.className = 'feedback';
+		updateWordDisplay('', state.wordAnswer, els.wordDisplay);
+		els.wordInput.focus();
+	});
+	
 	els.checkPlaceBtn.addEventListener('click', checkPlace);
-	els.resetPlaceBtn.addEventListener('click', resetDnd2);
+	
+	els.resetPlaceBtn.addEventListener('click', () => {
+		state.currentInput2 = '';
+		els.wordInput2.value = '';
+		els.placeFeedback.textContent = '';
+		els.placeFeedback.className = 'feedback';
+		updateWordDisplay('', state.placeAnswer, els.wordDisplay2);
+		els.wordInput2.focus();
+	});
+	
+	// Real-time input updates for first riddle
+	els.wordInput.addEventListener('input', (e) => {
+		state.currentInput = e.target.value.toUpperCase();
+		updateWordDisplay(state.currentInput, state.wordAnswer, els.wordDisplay);
+	});
+	
+	// Real-time input updates for second riddle
+	els.wordInput2.addEventListener('input', (e) => {
+		state.currentInput2 = e.target.value.toUpperCase();
+		updateWordDisplay(state.currentInput2, state.placeAnswer, els.wordDisplay2);
+	});
+	
+	// Enter key to check
+	els.wordInput.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			if (checkFirstRiddle()) revealSecondRiddle();
+		}
+	});
+	
+	els.wordInput2.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			checkPlace();
+		}
+	});
 }
 
 async function init() {
@@ -424,4 +321,3 @@ async function init() {
 }
 
 init();
-
